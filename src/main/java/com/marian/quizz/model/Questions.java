@@ -1,10 +1,11 @@
 package com.marian.quizz.model;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,19 +22,15 @@ public class Questions {
     private String description;
 
     @Column
-    private Date created_at = new Date();
+    private Date created_at;
 
     @OneToMany(
             mappedBy = "question",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<Answers> answers;
-
-
-//    @ManyToMany(mappedBy = "questions")
-//    @JsonIgnoreProperties("questions")
-//    Set<QuizzHeader> quizzHeaderSet;
+    @JsonManagedReference
+    private Set<Answers> answers;
 
 
     public Questions() {
@@ -45,7 +42,6 @@ public class Questions {
     }
 
     public void addAnswers(Answers a) {
-//        Questions questions = new Questions();
         answers.add(a);
         a.setQuestion(this);
     }
@@ -65,6 +61,5 @@ public class Questions {
                 ", answers=" + answers +
                 '}';
     }
-
 
 }

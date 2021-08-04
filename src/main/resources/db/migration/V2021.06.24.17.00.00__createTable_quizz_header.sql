@@ -22,7 +22,7 @@ BEGIN
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY]
 
-	ALTER TABLE [dbo].[quizz_header] ADD  DEFAULT (getdate()) FOR [created_date]
+	ALTER TABLE [dbo].[quizz_header] ADD  DEFAULT (getdate()) FOR created_date]
 
 	ALTER TABLE [dbo].[quizz_header]  WITH CHECK ADD  CONSTRAINT [fk_quizz_header_created_by] FOREIGN KEY([created_by])
 	REFERENCES [dbo].[users] ([id])

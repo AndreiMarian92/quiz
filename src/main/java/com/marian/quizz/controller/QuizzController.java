@@ -1,8 +1,10 @@
 package com.marian.quizz.controller;
 
 
+import com.marian.quizz.model.Questions;
 import com.marian.quizz.model.QuizzHeader;
 import com.marian.quizz.service.QuizzService;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +32,10 @@ public class QuizzController {
     public QuizzHeader getQuizzById(@PathVariable Integer id){
         return quizzService.getQuizzById(id);
     }
+
+//    @GetMapping("/quizz/{id}/{pos}")
+//    public Questions getQuizzQuestionByParams(@PathVariable Integer id, @PathVariable Integer pos){
+//        return quiz
+//    }
 
 }

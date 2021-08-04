@@ -1,5 +1,6 @@
 package com.marian.quizz.repository;
 
+import com.marian.quizz.model.Questions;
 import com.marian.quizz.model.QuizzContent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,13 +15,17 @@ public interface QuizzContentRepository extends JpaRepository<QuizzContent, Inte
 
     @Query("" +
             "SELECT DISTINCT " +
-            "   qc.pk.questions.id as idQuestion " +
-            "FROM QuizzContent as qc " +
+            "   qc.questions.id AS idQuestion " +
+//            "   qh.created_date AS createdDate " +
+//            "   qh.created_by AS createdBy " +
+            "FROM QuizzContent AS qc " +
+            "JOIN QuizzHeader AS qh " +
+            "ON qh.id = qc.quizzHeader.id " +
             "WHERE " +
-            "   qc.pk.quizzHeader.createdDate > DATEADD(DAY, :days, GETDATE()) " +
-            "   AND qc.pk.quizzHeader.createdBy = :userId ")
+            "   qh.createdDate > DATEADD(DAY, :days, GETDATE()) " +
+            "   AND qh.createdBy = :userId ")
     List<Integer> getAllQuizzQuestionIdsByCreatedByAndPeriod(@Param("userId") int userId, @Param("days") int daysToCheck);
 
 
-
+//    Questions findQuestionsByQuizzIdAndPosition(Integer idQuizz, Integer questionPosition);
 }

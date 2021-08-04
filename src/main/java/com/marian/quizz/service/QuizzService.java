@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -22,7 +23,7 @@ public class QuizzService {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizzService.class);
 
-    private static final int days = -62;
+    private static final int days = -16;
 
 
 
@@ -37,19 +38,15 @@ public class QuizzService {
         List<Integer> allDbQuestionIds = questionsRepository.getAllIds();
         logger.info("Found {} question ids in database.", allDbQuestionIds.size());
 
-        List<Integer> ignoredQuestionIds = new ArrayList<>();
+        List<Integer> ignoredQuestionIds = quizzContentRepository.getAllQuizzQuestionIdsByCreatedByAndPeriod(MockupUsers.MARIAN.getUserId(), days);
 
-        List<Integer> anotherDummyList = quizzContentRepository.getAllQuizzQuestionIdsByCreatedByAndPeriod(1, 62);
 
-        QuizzHeader dummyHeader = quizzHeaderRepository.findById(1).get();
+
+
+
+
+
 //        quizzContentRepository.getAllQuizzQuestionIdsByCreatedByAndPeriod(MockupUsers.MARIAN.getUserId(), days);
-
-
-
-
-
-
-
 
 //                quizzHeaderRepository.getAllQuizzQuestionIdsByCreatedByAndPeriod(MockupUsers.MARIAN.getUserId(), days);
         logger.info("Found {} distinct question ids encountered in the past {} days, for user with id: {}.", ignoredQuestionIds.size(), days, MockupUsers.MARIAN.getUserId());
@@ -78,24 +75,64 @@ public class QuizzService {
                 .map(Questions::new)
                 .collect(Collectors.toSet());
 
-        QuizzHeader quizzHeader = new QuizzHeader(MockupUsers.MARIAN.getUserId(), questions.size() );
-//
-        QuizzHeader newQuizz = quizzHeaderRepository.save(quizzHeader);
+        AtomicInteger i = new AtomicInteger(1);
+        Set<QuizzContent> quizzContents = questions.stream()
+                .map(QuizzContent::new)
+                .collect(Collectors.toSet());
 
-        return newQuizz.getId();
+        quizzContents.forEach(e -> {
+            e.setQuestionPosition(i.get());
+            i.getAndIncrement();
+        });
+
+        QuizzHeader quizzHeader = new QuizzHeader(MockupUsers.MARIAN.getUserId(), quizzContents.size());
+        QuizzHeader dbQuizzHeader = quizzHeaderRepository.save(quizzHeader);
+
+        quizzContents.forEach(element -> element.setQuizzHeader(dbQuizzHeader));
+
+        quizzContentRepository.saveAll(quizzContents);
+
+
+
+        //todo: metoda pentru setarea pozitiei intrebarii in quizz Content
+
+
+
+        return dbQuizzHeader.getId();
     }
 
     public QuizzHeader getQuizzById(Integer id) {
-       return quizzHeaderRepository.findById(id).get();
+        QuizzHeader quizzHeader = quizzHeaderRepository.getById(id);
+
+
+       return quizzHeader ;
     }
 
 
-//    public Questions getQuizzQuestionByParams (Integer idQuizz, Integer questionPosition) throws Exception{
-//
-//        quizzContentRepository.findQuestionsByQuizzIdAndPosition()
+
+    //todo: metoda pentru aducerea intrebarii in functie de id quizz si pozitia intrebarii.
+
+
+    //todo: metoda pentru setarea parametrului is_correct!
+    // se trimite un obiect de tipul quizz content, se aduce intrebarea + raspunsurile pe baza id_content , se compara raspunsul userului cu cel din baza.
+    // ulterior se seteaza is_correct in functie de comparatie.
+    // daca raspunsurile > 5, metoda pentru anularea quizz-ului. (failed)
+
+
+    //
+
+
+    //todo: metoda validare quizz :
+    //
 
 
 
+    public Questions getQuizzQuestionByParams (Integer idQuizz, Integer questionPosition) {
+
+//       return quizzContentRepository.findQuestionsByQuizzIdAndPosition(idQuizz, questionPosition);
+
+        return null;
+    }
 
 
 

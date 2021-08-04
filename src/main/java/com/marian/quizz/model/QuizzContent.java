@@ -1,7 +1,12 @@
 package com.marian.quizz.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 
@@ -11,60 +16,58 @@ import javax.persistence.*;
 @Setter
 public class QuizzContent {
 
-    @EmbeddedId
-    @JsonIgnore
-    private QuizzContentPK pk;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(nullable = false)
+    @Column
     private Integer questionPosition;
 
     @Column(name = "is_correct")
-    private boolean isCorrect;
+    private Boolean isCorrect;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_quizz", referencedColumnName = "id")
+    @JsonBackReference
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private QuizzHeader quizzHeader;
+
+    @OneToOne(
+            optional = false,
+            fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_question")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Questions questions;
 
     public QuizzContent() {
     }
 
-    public QuizzContent(QuizzContentPK pk, Integer questionPosition, boolean isCorrect) {
-        this.pk = pk;
+    public QuizzContent(Integer questionPosition, boolean isCorrect, Questions questions) {
         this.questionPosition = questionPosition;
         this.isCorrect = isCorrect;
+        this.questions = questions;
     }
 
-    public QuizzContent(QuizzHeader quizzHeader, Questions questions, Integer questionPosition){
-        pk = new QuizzContentPK();
-        pk.setQuizzHeader(quizzHeader);
-        pk.setQuestions(questions);
-        this.questionPosition = questionPosition;
+    public QuizzContent(Questions questions) {
+        this.questions = questions;
     }
 
-    @Transient
-    public Questions getQuestion(){
-        return this.pk.getQuestions();
+    public void setQuizzHeader(QuizzHeader quizzHeader) {
+        this.quizzHeader = quizzHeader;
     }
 
-    @Transient
-    public Integer getQuestionPosition(){
-        return getQuestionPosition();
+    @Override
+    public String toString() {
+        return "QuizzContent{" +
+                "id=" + id +
+                ", questionPosition=" + questionPosition +
+                ", isCorrect=" + isCorrect +
+                ", questions=" + questions +
+                '}';
     }
 
 
-//    @Column(name = "id_quizz")
-//    private Integer idQuizz;
-//
-//    @Column(name = "id_question")
-//    private Integer idQuestion;
-
-
-
-//    @Override
-//    public String toString() {
-//        return "QuizzContent{" +
-//                "id=" + id +
-//                ", idQuizz=" + idQuizz +
-//                ", idQuestion=" + idQuestion +
-//                ", isCorrect=" + isCorrect +
-//                '}';
-//    }
 }
 
 

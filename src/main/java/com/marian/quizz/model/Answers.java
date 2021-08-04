@@ -1,5 +1,6 @@
 package com.marian.quizz.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
@@ -22,10 +23,11 @@ public class Answers {
 
     @Column(nullable = false)
     private boolean is_correct;
-
+//
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties("answers")
     @JoinColumn(name = "question_id", referencedColumnName = "id")
+    @JsonBackReference
     private Questions question;
 
     @Column

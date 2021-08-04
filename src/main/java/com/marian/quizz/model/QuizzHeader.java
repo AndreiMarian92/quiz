@@ -1,18 +1,17 @@
 package com.marian.quizz.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "quizz_header")
 @Getter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuizzHeader {
 
     @Id
@@ -23,10 +22,10 @@ public class QuizzHeader {
     private Integer createdBy;
 
     @Column(name = "created_date")
-    private Date createdDate = new Date();
+    private Date createdDate;
 
     @Column(name = "is_passed")
-    private boolean isPassed;
+    private Boolean isPassed;
 
     @Column(name = "total_questions")
     private Integer totalQuestions;
@@ -34,21 +33,13 @@ public class QuizzHeader {
     @Column(name = "correct_answers")
     private Integer correctAnswers;
 
+    @OneToMany(
+            mappedBy = "quizzHeader",
+            cascade = CascadeType.ALL,
+            orphanRemoval = false)
     @JsonManagedReference
-    @OneToMany(mappedBy = "pk.quizzHeader")
-    private List<QuizzContent> quizzContent = new ArrayList<>();
-
-//    @ManyToMany(
-//            cascade = CascadeType.ALL,
-//            fetch = FetchType.EAGER)
-//    @JoinTable(
-//            name = "quizz_content",
-//            joinColumns = @JoinColumn(name = "id_question", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "id_quizz", referencedColumnName = "id")
-//    )
-//    Set<Questions> questions;
-
-
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Set<QuizzContent> quizzContent = new HashSet<>();
 
 
     public QuizzHeader(Integer createdBy, Integer totalQuestions) {
@@ -56,8 +47,31 @@ public class QuizzHeader {
         this.totalQuestions = totalQuestions;
     }
 
+    public QuizzHeader(Integer id, Integer createdBy, Date createdDate, boolean isPassed, Integer totalQuestions, Integer correctAnswers, Set<QuizzContent> quizzContent) {
+        this.id = id;
+        this.createdBy = createdBy;
+        this.createdDate = createdDate;
+        this.isPassed = isPassed;
+        this.totalQuestions = totalQuestions;
+        this.correctAnswers = correctAnswers;
+        this.quizzContent = quizzContent;
+    }
+
     public QuizzHeader() {
     }
+
+    public QuizzHeader(int userId, int size, Set<QuizzContent> quizzContents) {
+        this.createdBy = userId;
+        this.totalQuestions = size;
+        this.quizzContent = quizzContents;
+    }
+
+    public QuizzHeader(int userId, Set<QuizzContent> quizzContent) {
+        this.createdBy = userId;
+        this.totalQuestions = quizzContent.size();
+        this.quizzContent = quizzContent;
+    }
+
 
     @Override
     public String toString() {
@@ -71,4 +85,11 @@ public class QuizzHeader {
                 ", quizzContent=" + quizzContent +
                 '}';
     }
+
+    public void addQuizzContent(QuizzContent q){
+        quizzContent.add(q);
+        q.setQuizzHeader(this);
+    }
+
+
 }

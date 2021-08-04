@@ -11,6 +11,8 @@ import java.util.List;
 @Repository
 public interface QuizzHeaderRepository extends JpaRepository<QuizzHeader, Integer> {
 
+
+
 //    @Query("" +
 //            "SELECT DISTINCT " +
 //            "   qc.idQuestion " +
