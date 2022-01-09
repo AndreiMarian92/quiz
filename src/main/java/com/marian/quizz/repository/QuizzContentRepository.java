@@ -27,5 +27,33 @@ public interface QuizzContentRepository extends JpaRepository<QuizzContent, Inte
     List<Integer> getAllQuizzQuestionIdsByCreatedByAndPeriod(@Param("userId") int userId, @Param("days") int daysToCheck);
 
 
+
+//    @Query("" +
+//            "SELECT First " +
+//            "   qc.questions.id as idQuestion " +
+//            "FROM QuizzContent as qc " +
+//            "WHERE " +
+//            "   qc.quizzHeader.id = :quizzId " +
+//            "   AND qc.questionPosition >= :qPosition " +
+//            "   AND qc.isCorrect IS NULL " +
+//            " ORDER BY qc.questionPostion ASC ")
+//    Integer getQuestionIdByParams(@Param("quizzId") int quizzId, @Param("qPosition") int questionPosition);
+
+    QuizzContent findFirstByQuizzHeader_idAndQuestionPositionGreaterThanEqualAndIsCorrectIsNullOrderByQuestionPositionAsc(Integer quizzId, Integer questionId);
+
+    QuizzContent findOneByQuizzHeader_idAndQuestions_id(Integer quizzId, Integer questionId);
+
+
+//    @Query("" +
+//            "SELECT ALL " +
+//            "FROM Questions as q " +
+//            "JOIN QuizzContent as qc " +
+//            "   on q.id = qc.questionId " +
+//            "WHERE " +
+//            "   qc.idQuizz = :idQ " +
+//            "   AND qc.questionPosition = :qPos")
+//    Questions findQuestionsByQuizzIdAndPosition(@Param("idQ") int idQuizz, @Param("qPos") Integer questionPosition);
+
+
 //    Questions findQuestionsByQuizzIdAndPosition(Integer idQuizz, Integer questionPosition);
 }

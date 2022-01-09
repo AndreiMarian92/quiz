@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
-
+import lombok.Setter;
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "quizz_header")
 @Getter
+@Setter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class QuizzHeader {
 
@@ -24,6 +27,9 @@ public class QuizzHeader {
     @Column(name = "created_date")
     private Date createdDate;
 
+    @Column(name = "end_date")
+    private Date endDate;
+
     @Column(name = "is_passed")
     private Boolean isPassed;
 
@@ -32,6 +38,11 @@ public class QuizzHeader {
 
     @Column(name = "correct_answers")
     private Integer correctAnswers;
+
+    @Column(name = "incorrect_answers")
+    private Integer incorrectAnswers;
+
+
 
     @OneToMany(
             mappedBy = "quizzHeader",
@@ -45,6 +56,8 @@ public class QuizzHeader {
     public QuizzHeader(Integer createdBy, Integer totalQuestions) {
         this.createdBy = createdBy;
         this.totalQuestions = totalQuestions;
+        this.correctAnswers = 0;
+        this.incorrectAnswers = 0;
     }
 
     public QuizzHeader(Integer id, Integer createdBy, Date createdDate, boolean isPassed, Integer totalQuestions, Integer correctAnswers, Set<QuizzContent> quizzContent) {

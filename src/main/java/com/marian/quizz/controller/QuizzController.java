@@ -1,10 +1,11 @@
 package com.marian.quizz.controller;
 
 
+import com.marian.quizz.model.CheckAnswerDTO;
+import com.marian.quizz.model.QuestionDTO;
 import com.marian.quizz.model.Questions;
 import com.marian.quizz.model.QuizzHeader;
 import com.marian.quizz.service.QuizzService;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,15 @@ public class QuizzController {
         return quizzService.getQuizzById(id);
     }
 
-//    @GetMapping("/quizz/{id}/{pos}")
-//    public Questions getQuizzQuestionByParams(@PathVariable Integer id, @PathVariable Integer pos){
-//        return quiz
-//    }
+    @GetMapping("/quizz/{id}/{pos}")
+    public QuestionDTO getQuizzQuestionByParams(@PathVariable Integer id, @PathVariable Integer pos){
+        return quizzService.getQuestionIdByParams(id, pos);
+    }
+
+
+    @PostMapping("/quizz/check")
+    public CheckAnswerDTO checkQuestion(@RequestBody QuestionDTO questionDTO){
+        return quizzService.checkQuestion(questionDTO);
+    }
 
 }

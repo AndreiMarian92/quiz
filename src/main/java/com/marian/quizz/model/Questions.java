@@ -1,9 +1,13 @@
 package com.marian.quizz.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +16,9 @@ import java.util.Set;
 @Table(name = "questions")
 @Getter
 @Setter
-public class Questions {
+@ToString
+@AllArgsConstructor
+public class Questions implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +29,12 @@ public class Questions {
 
     @Column
     private Date created_at;
+
+    @Column(name = "image_URL")
+    private String imageUrl;
+
+    @Transient
+    private Integer questionPosition;
 
     @OneToMany(
             mappedBy = "question",
@@ -52,14 +64,14 @@ public class Questions {
     }
 
 
-    @Override
-    public String toString() {
-        return "Questions{" +
-                "id=" + id +
-                ", description='" + description + '\'' +
-                ", created_at=" + created_at +
-                ", answers=" + answers +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Questions{" +
+//                "id=" + id +
+//                ", description='" + description + '\'' +
+//                ", created_at=" + created_at +
+//                ", answers=" + answers +
+//                '}';
+//    }
 
 }

@@ -36,6 +36,14 @@ public class Answers {
     public Answers() {
     }
 
+//    public boolean getIsCorrect() {
+//        return is_correct;
+//    }
+//
+//    public void setIsCorrect(boolean is_correct) {
+//        this.is_correct = is_correct;
+//    }
+
     @Override
     public String toString() {
         return "Answers{" +

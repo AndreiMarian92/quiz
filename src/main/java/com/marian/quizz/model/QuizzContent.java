@@ -9,12 +9,13 @@ import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "quizz_content")
 @Getter
 @Setter
-public class QuizzContent {
+public class QuizzContent implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
